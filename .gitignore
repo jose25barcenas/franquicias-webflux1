@@ -1,0 +1,28 @@
+# Ignore Gradle files
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+
+# Logs
+*.log
+logs/
+
+# Docker
+docker/data/
+postgres_data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Application
+*.jar

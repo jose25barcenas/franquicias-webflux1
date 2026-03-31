@@ -1,0 +1,11 @@
+spring:
+  r2dbc:
+    url: r2dbc:h2:mem:///testdb;OPTIONS=DB_CLOSE_DELAY=-1
+    username: sa
+    password: 
+  application:
+    name: franquicias-webflux-test
+
+logging:
+  level:
+    com.franquicias: DEBUG
