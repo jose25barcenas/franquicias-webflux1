@@ -18,7 +18,18 @@ public class GlobalExceptionHandler {
                 .body(Map.of(
                         "timestamp", LocalDateTime.now().toString(),
                         "status", HttpStatus.BAD_REQUEST.value(),
-                        "error", "Bad Request",
+                        "error", "Error de validación",
+                        "message", ex.getMessage()
+                )));
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public Mono<ResponseEntity<Map<String, Object>>> handleResourceNotFound(ResourceNotFoundException ex) {
+        return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of(
+                        "timestamp", LocalDateTime.now().toString(),
+                        "status", HttpStatus.NOT_FOUND.value(),
+                        "error", "Recurso no encontrado",
                         "message", ex.getMessage()
                 )));
     }
@@ -29,8 +40,14 @@ public class GlobalExceptionHandler {
                 .body(Map.of(
                         "timestamp", LocalDateTime.now().toString(),
                         "status", HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                        "error", "Internal Server Error",
-                        "message", ex.getMessage()
+                        "error", "Error interno del servidor",
+                        "message", "Ha ocurrido un error inesperado. Por favor, intente más tarde."
                 )));
+    }
+
+    public static class ResourceNotFoundException extends RuntimeException {
+        public ResourceNotFoundException(String message) {
+            super(message);
+        }
     }
 }
