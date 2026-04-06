@@ -27,7 +27,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.mockito:mockito-core'
-    testImplementation 'com.h2database:h2'
+    testImplementation 'io.r2dbc:r2dbc-h2'
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
