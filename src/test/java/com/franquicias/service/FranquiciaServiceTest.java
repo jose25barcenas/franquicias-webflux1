@@ -89,4 +89,13 @@ class FranquiciaServiceTest {
         StepVerifier.create(service.eliminarFranquicia(1L))
                 .verifyComplete();
     }
+
+    @Test
+    void actualizarFranquicia_throwsError_whenNotFound() {
+        when(franquiciaRepository.findById(99L)).thenReturn(Mono.empty());
+
+        StepVerifier.create(service.actualizarFranquicia(99L, new FranquiciaRequest("X")))
+                .expectError(com.franquicias.config.GlobalExceptionHandler.ResourceNotFoundException.class)
+                .verify();
+    }
 }
