@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
                 .body(Map.of(
                         "timestamp", LocalDateTime.now().toString(),
                         "status", HttpStatus.BAD_REQUEST.value(),
-                        "error", "Error de validación",
+                        "error", "Validation Error",
                         "message", ex.getMessage()
                 )));
     }
@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
                 .body(Map.of(
                         "timestamp", LocalDateTime.now().toString(),
                         "status", HttpStatus.NOT_FOUND.value(),
-                        "error", "Recurso no encontrado",
+                        "error", "Resource Not Found",
                         "message", ex.getMessage()
                 )));
     }
@@ -40,8 +40,8 @@ public class GlobalExceptionHandler {
                 .body(Map.of(
                         "timestamp", LocalDateTime.now().toString(),
                         "status", HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                        "error", "Error interno del servidor",
-                        "message", "Ha ocurrido un error inesperado. Por favor, intente más tarde."
+                        "error", "Internal Server Error",
+                        "message", "An unexpected error occurred. Please try again later."
                 )));
     }
 

@@ -34,7 +34,7 @@ public class ProductoService implements IProductoService {
     @Override
     public Mono<ProductoResponse> agregarProducto(Long sucursalId, ProductoRequest request) {
         return sucursalRepository.findById(sucursalId)
-                .switchIfEmpty(Mono.error(new IllegalArgumentException("Sucursal no encontrada")))
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("Sucursal not found")))
                 .map(s -> new Producto(null, request.nombre(), request.stock(), sucursalId))
                 .flatMap(productoRepository::save)
                 .map(this::toResponse);
@@ -43,7 +43,7 @@ public class ProductoService implements IProductoService {
     @Override
     public Mono<ProductoResponse> actualizarStock(Long productoId, ProductoStockRequest request) {
         return productoRepository.findById(productoId)
-                .switchIfEmpty(Mono.error(new IllegalArgumentException("Producto no encontrado")))
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("Producto not found")))
                 .map(p -> {
                     p.setStock(request.stock());
                     return p;
@@ -55,7 +55,7 @@ public class ProductoService implements IProductoService {
     @Override
     public Mono<ProductoResponse> actualizarNombreProducto(Long productoId, ProductoRequest request) {
         return productoRepository.findById(productoId)
-                .switchIfEmpty(Mono.error(new IllegalArgumentException("Producto no encontrado")))
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("Producto not found")))
                 .map(p -> {
                     p.setNombre(request.nombre());
                     return p;

@@ -32,7 +32,7 @@ public class SucursalService implements ISucursalService {
     @Override
     public Mono<SucursalResponse> agregarSucursal(Long franquiciaId, SucursalRequest request) {
         return franquiciaRepository.findById(franquiciaId)
-                .switchIfEmpty(Mono.error(new IllegalArgumentException("Franquicia no encontrada")))
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("Franquicia not found")))
                 .map(f -> new Sucursal(null, request.nombre(), franquiciaId))
                 .flatMap(sucursalRepository::save)
                 .map(this::toResponse);
@@ -41,7 +41,7 @@ public class SucursalService implements ISucursalService {
     @Override
     public Mono<SucursalResponse> actualizarSucursal(Long id, SucursalRequest request) {
         return sucursalRepository.findById(id)
-                .switchIfEmpty(Mono.error(new IllegalArgumentException("Sucursal no encontrada")))
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("Sucursal not found")))
                 .map(s -> {
                     s.setNombre(request.nombre());
                     return s;
@@ -53,7 +53,7 @@ public class SucursalService implements ISucursalService {
     @Override
     public Mono<Void> eliminarSucursal(Long id) {
         return sucursalRepository.findById(id)
-                .switchIfEmpty(Mono.error(new IllegalArgumentException("Sucursal no encontrada")))
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("Sucursal not found")))
                 .flatMap(sucursal -> sucursalRepository.deleteById(id));
     }
 

@@ -41,7 +41,7 @@ public class FranquiciaService implements IFranquiciaService {
     @Override
     public Mono<FranquiciaResponse> actualizarFranquicia(Long id, FranquiciaRequest request) {
         return franquiciaRepository.findById(id)
-                .switchIfEmpty(Mono.error(new IllegalArgumentException("Franquicia no encontrada")))
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("Franquicia not found")))
                 .map(f -> {
                     f.setNombre(request.nombre());
                     return f;
