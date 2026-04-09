@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/api/franquicias")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "${cors.allowed-origins:http://localhost:3000}")
 public class FranquiciaController {
 
     private final IFranquiciaService franquiciaService;
