@@ -7,6 +7,9 @@ import com.franquicias.dto.ProductoStockRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * Interface defining operations for product (producto) management.
+ */
 public interface IProductoService {
     Flux<ProductoResponse> listarProductos(Long sucursalId);
     Mono<ProductoResponse> obtenerProducto(Long id);
