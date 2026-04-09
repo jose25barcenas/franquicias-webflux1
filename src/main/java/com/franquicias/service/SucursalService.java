@@ -1,5 +1,6 @@
 package com.franquicias.service;
 
+import com.franquicias.config.GlobalExceptionHandler.ResourceNotFoundException;
 import com.franquicias.dto.SucursalRequest;
 import com.franquicias.dto.SucursalResponse;
 import com.franquicias.model.Sucursal;
@@ -32,7 +33,7 @@ public class SucursalService implements ISucursalService {
     @Override
     public Mono<SucursalResponse> agregarSucursal(Long franquiciaId, SucursalRequest request) {
         return franquiciaRepository.findById(franquiciaId)
-                .switchIfEmpty(Mono.error(new IllegalArgumentException("Franquicia not found")))
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Franquicia not found with id: " + franquiciaId)))
                 .map(f -> new Sucursal(null, request.nombre(), franquiciaId))
                 .flatMap(sucursalRepository::save)
                 .map(this::toResponse);
@@ -41,7 +42,7 @@ public class SucursalService implements ISucursalService {
     @Override
     public Mono<SucursalResponse> actualizarSucursal(Long id, SucursalRequest request) {
         return sucursalRepository.findById(id)
-                .switchIfEmpty(Mono.error(new IllegalArgumentException("Sucursal not found")))
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Sucursal not found with id: " + id)))
                 .map(s -> {
                     s.setNombre(request.nombre());
                     return s;
@@ -53,7 +54,7 @@ public class SucursalService implements ISucursalService {
     @Override
     public Mono<Void> eliminarSucursal(Long id) {
         return sucursalRepository.findById(id)
-                .switchIfEmpty(Mono.error(new IllegalArgumentException("Sucursal not found")))
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Sucursal not found with id: " + id)))
                 .flatMap(sucursal -> sucursalRepository.deleteById(id));
     }
 
