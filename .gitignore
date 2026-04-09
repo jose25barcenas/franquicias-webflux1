@@ -12,6 +12,7 @@ build/
 .project
 .classpath
 .settings/
+bin/
 
 # Logs
 *.log
@@ -27,3 +28,6 @@ Thumbs.db
 
 # Application
 *.jar
+
+# Eclipse
+.factorypath
