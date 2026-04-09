@@ -1,10 +1,9 @@
 package com.franquicias.controller;
 
 import com.franquicias.dto.*;
-import com.franquicias.model.Franquicia;
-import com.franquicias.model.Producto;
-import com.franquicias.model.Sucursal;
-import com.franquicias.service.FranquiciaService;
+import com.franquicias.service.IFranquiciaService;
+import com.franquicias.service.ISucursalService;
+import com.franquicias.service.IProductoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,15 +18,17 @@ import reactor.core.publisher.Mono;
 @CrossOrigin(origins = "*")
 public class FranquiciaController {
 
-    private final FranquiciaService franquiciaService;
+    private final IFranquiciaService franquiciaService;
+    private final ISucursalService sucursalService;
+    private final IProductoService productoService;
 
     @GetMapping
-    public Flux<Franquicia> listarFranquicias() {
+    public Flux<FranquiciaResponse> listarFranquicias() {
         return franquiciaService.listarFranquicias();
     }
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<Franquicia>> obtenerFranquicia(@PathVariable Long id) {
+    public Mono<ResponseEntity<FranquiciaResponse>> obtenerFranquicia(@PathVariable Long id) {
         return franquiciaService.obtenerFranquicia(id)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
@@ -35,12 +36,12 @@ public class FranquiciaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Franquicia> crearFranquicia(@Valid @RequestBody FranquiciaRequest request) {
+    public Mono<FranquiciaResponse> crearFranquicia(@Valid @RequestBody FranquiciaRequest request) {
         return franquiciaService.crearFranquicia(request);
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<Franquicia>> actualizarFranquicia(
+    public Mono<ResponseEntity<FranquiciaResponse>> actualizarFranquicia(
             @PathVariable Long id, @Valid @RequestBody FranquiciaRequest request) {
         return franquiciaService.actualizarFranquicia(id, request)
                 .map(ResponseEntity::ok)
@@ -54,21 +55,21 @@ public class FranquiciaController {
     }
 
     @GetMapping("/{id}/sucursales")
-    public Flux<Sucursal> listarSucursales(@PathVariable Long id) {
-        return franquiciaService.listarSucursales(id);
+    public Flux<SucursalResponse> listarSucursales(@PathVariable Long id) {
+        return sucursalService.listarSucursales(id);
     }
 
     @PostMapping("/{id}/sucursales")
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Sucursal> agregarSucursal(
+    public Mono<SucursalResponse> agregarSucursal(
             @PathVariable Long id, @Valid @RequestBody SucursalRequest request) {
-        return franquiciaService.agregarSucursal(id, request);
+        return sucursalService.agregarSucursal(id, request);
     }
 
     @PutMapping("/sucursales/{id}")
-    public Mono<ResponseEntity<Sucursal>> actualizarSucursal(
+    public Mono<ResponseEntity<SucursalResponse>> actualizarSucursal(
             @PathVariable Long id, @Valid @RequestBody SucursalRequest request) {
-        return franquiciaService.actualizarSucursal(id, request)
+        return sucursalService.actualizarSucursal(id, request)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
@@ -76,33 +77,33 @@ public class FranquiciaController {
     @DeleteMapping("/sucursales/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> eliminarSucursal(@PathVariable Long id) {
-        return franquiciaService.eliminarSucursal(id);
+        return sucursalService.eliminarSucursal(id);
     }
 
     @GetMapping("/sucursales/{id}/productos")
-    public Flux<Producto> listarProductos(@PathVariable Long id) {
-        return franquiciaService.listarProductos(id);
+    public Flux<ProductoResponse> listarProductos(@PathVariable Long id) {
+        return productoService.listarProductos(id);
     }
 
     @PostMapping("/sucursales/{id}/productos")
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Producto> agregarProducto(
+    public Mono<ProductoResponse> agregarProducto(
             @PathVariable Long id, @Valid @RequestBody ProductoRequest request) {
-        return franquiciaService.agregarProducto(id, request);
+        return productoService.agregarProducto(id, request);
     }
 
     @PutMapping("/productos/{id}/stock")
-    public Mono<ResponseEntity<Producto>> actualizarStock(
+    public Mono<ResponseEntity<ProductoResponse>> actualizarStock(
             @PathVariable Long id, @RequestBody ProductoStockRequest request) {
-        return franquiciaService.actualizarStock(id, request)
+        return productoService.actualizarStock(id, request)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/productos/{id}")
-    public Mono<ResponseEntity<Producto>> actualizarProducto(
+    public Mono<ResponseEntity<ProductoResponse>> actualizarProducto(
             @PathVariable Long id, @Valid @RequestBody ProductoRequest request) {
-        return franquiciaService.actualizarNombreProducto(id, request)
+        return productoService.actualizarNombreProducto(id, request)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
@@ -110,11 +111,11 @@ public class FranquiciaController {
     @DeleteMapping("/productos/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> eliminarProducto(@PathVariable Long id) {
-        return franquiciaService.eliminarProducto(id);
+        return productoService.eliminarProducto(id);
     }
 
     @GetMapping("/{id}/productos-max-stock")
     public Flux<ProductoMaxStockResponse> productoMaxStock(@PathVariable Long id) {
-        return franquiciaService.productoMaxStockPorFranquicia(id);
+        return productoService.productoMaxStockPorFranquicia(id);
     }
 }

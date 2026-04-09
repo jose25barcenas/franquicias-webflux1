@@ -1,13 +1,9 @@
 package com.franquicias.controller;
 
-import com.franquicias.dto.FranquiciaRequest;
-import com.franquicias.dto.ProductoRequest;
-import com.franquicias.dto.ProductoStockRequest;
-import com.franquicias.dto.SucursalRequest;
-import com.franquicias.model.Franquicia;
-import com.franquicias.model.Producto;
-import com.franquicias.model.Sucursal;
-import com.franquicias.service.FranquiciaService;
+import com.franquicias.dto.*;
+import com.franquicias.service.IFranquiciaService;
+import com.franquicias.service.ISucursalService;
+import com.franquicias.service.IProductoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
@@ -28,87 +24,95 @@ class FranquiciaControllerTest {
     private WebTestClient webTestClient;
 
     @MockBean
-    private FranquiciaService franquiciaService;
+    private IFranquiciaService franquiciaService;
+
+    @MockBean
+    private ISucursalService sucursalService;
+
+    @MockBean
+    private IProductoService productoService;
 
     @Test
     void listarFranquicias_returnsAllFranquicias() {
-        Franquicia f1 = Franquicia.builder().id(1L).nombre("Franquicia 1").build();
-        Franquicia f2 = Franquicia.builder().id(2L).nombre("Franquicia 2").build();
-        when(franquiciaService.listarFranquicias()).thenReturn(Flux.just(f1, f2));
+        when(franquiciaService.listarFranquicias())
+                .thenReturn(Flux.just(
+                        new FranquiciaResponse(1L, "Franquicia 1"),
+                        new FranquiciaResponse(2L, "Franquicia 2")
+                ));
 
         webTestClient.get().uri("/api/franquicias")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBodyList(Franquicia.class)
+                .expectBodyList(FranquiciaResponse.class)
                 .hasSize(2);
     }
 
     @Test
     void obtenerFranquicia_returnsFranquicia_whenExists() {
-        Franquicia franquicia = Franquicia.builder().id(1L).nombre("Test").build();
-        when(franquiciaService.obtenerFranquicia(1L)).thenReturn(Mono.just(franquicia));
+        when(franquiciaService.obtenerFranquicia(1L))
+                .thenReturn(Mono.just(new FranquiciaResponse(1L, "Test")));
 
         webTestClient.get().uri("/api/franquicias/1")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(Franquicia.class);
+                .expectBody(FranquiciaResponse.class);
     }
 
     @Test
     void crearFranquicia_createsAndReturnsFranquicia() {
-        Franquicia savedFranquicia = Franquicia.builder().id(1L).nombre("Nueva").build();
-        when(franquiciaService.crearFranquicia(any(FranquiciaRequest.class))).thenReturn(Mono.just(savedFranquicia));
+        when(franquiciaService.crearFranquicia(any(FranquiciaRequest.class)))
+                .thenReturn(Mono.just(new FranquiciaResponse(1L, "Nueva")));
 
         webTestClient.post().uri("/api/franquicias")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue("{\"nombre\":\"Nueva\"}")
                 .exchange()
                 .expectStatus().isCreated()
-                .expectBody(Franquicia.class);
+                .expectBody(FranquiciaResponse.class);
     }
 
     @Test
     void agregarSucursal_createsAndReturnsSucursal() {
-        Sucursal savedSucursal = Sucursal.builder().id(1L).nombre("Sucursal").franquiciaId(1L).build();
-        when(franquiciaService.agregarSucursal(eq(1L), any(SucursalRequest.class))).thenReturn(Mono.just(savedSucursal));
+        when(sucursalService.agregarSucursal(eq(1L), any(SucursalRequest.class)))
+                .thenReturn(Mono.just(new SucursalResponse(1L, "Sucursal", 1L)));
 
         webTestClient.post().uri("/api/franquicias/1/sucursales")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue("{\"nombre\":\"Sucursal\"}")
                 .exchange()
                 .expectStatus().isCreated()
-                .expectBody(Sucursal.class);
+                .expectBody(SucursalResponse.class);
     }
 
     @Test
     void agregarProducto_createsAndReturnsProducto() {
-        Producto savedProducto = Producto.builder().id(1L).nombre("Producto").stock(100).sucursalId(1L).build();
-        when(franquiciaService.agregarProducto(eq(1L), any(ProductoRequest.class))).thenReturn(Mono.just(savedProducto));
+        when(productoService.agregarProducto(eq(1L), any(ProductoRequest.class)))
+                .thenReturn(Mono.just(new ProductoResponse(1L, "Producto", 100, 1L)));
 
         webTestClient.post().uri("/api/franquicias/sucursales/1/productos")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue("{\"nombre\":\"Producto\",\"stock\":100}")
                 .exchange()
                 .expectStatus().isCreated()
-                .expectBody(Producto.class);
+                .expectBody(ProductoResponse.class);
     }
 
     @Test
     void actualizarStock_updatesAndReturnsProducto() {
-        Producto updatedProducto = Producto.builder().id(1L).nombre("Producto").stock(50).sucursalId(1L).build();
-        when(franquiciaService.actualizarStock(eq(1L), any(ProductoStockRequest.class))).thenReturn(Mono.just(updatedProducto));
+        when(productoService.actualizarStock(eq(1L), any(ProductoStockRequest.class)))
+                .thenReturn(Mono.just(new ProductoResponse(1L, "Producto", 50, 1L)));
 
         webTestClient.put().uri("/api/franquicias/productos/1/stock")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue("{\"stock\":50}")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(Producto.class);
+                .expectBody(ProductoResponse.class);
     }
 
     @Test
     void eliminarProducto_deletesSuccessfully() {
-        when(franquiciaService.eliminarProducto(1L)).thenReturn(Mono.empty());
+        when(productoService.eliminarProducto(1L)).thenReturn(Mono.empty());
 
         webTestClient.delete().uri("/api/franquicias/productos/1")
                 .exchange()
@@ -117,25 +121,25 @@ class FranquiciaControllerTest {
 
     @Test
     void listarSucursales_returnsSucursales() {
-        Sucursal s1 = Sucursal.builder().id(1L).nombre("Sucursal 1").franquiciaId(1L).build();
-        when(franquiciaService.listarSucursales(1L)).thenReturn(Flux.just(s1));
+        when(sucursalService.listarSucursales(1L))
+                .thenReturn(Flux.just(new SucursalResponse(1L, "Sucursal 1", 1L)));
 
         webTestClient.get().uri("/api/franquicias/1/sucursales")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBodyList(Sucursal.class)
+                .expectBodyList(SucursalResponse.class)
                 .hasSize(1);
     }
 
     @Test
     void listarProductos_returnsProductos() {
-        Producto p1 = Producto.builder().id(1L).nombre("Producto 1").stock(10).sucursalId(1L).build();
-        when(franquiciaService.listarProductos(1L)).thenReturn(Flux.just(p1));
+        when(productoService.listarProductos(1L))
+                .thenReturn(Flux.just(new ProductoResponse(1L, "Producto 1", 10, 1L)));
 
         webTestClient.get().uri("/api/franquicias/sucursales/1/productos")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBodyList(Producto.class)
+                .expectBodyList(ProductoResponse.class)
                 .hasSize(1);
     }
 }
