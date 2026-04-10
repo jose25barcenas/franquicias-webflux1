@@ -2,7 +2,7 @@
 
 A reactive REST API for managing franchises, branches, and products built with Spring WebFlux and PostgreSQL.
 
-## 🚀 Features
+##  Features
 
 - Full CRUD operations for franchises, branches, and products
 - Reactive programming with Spring WebFlux
@@ -10,7 +10,7 @@ A reactive REST API for managing franchises, branches, and products built with S
 - Docker & Docker Compose support
 - Unit and integration tests
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 | Technology | Version |
 |------------|---------|
@@ -21,7 +21,7 @@ A reactive REST API for managing franchises, branches, and products built with S
 | PostgreSQL | 15+ |
 | Gradle | 8.5 |
 
-## 📋 API Endpoints
+##  API Endpoints
 
 ### Franchises
 | Method | Endpoint | Description |
@@ -55,7 +55,7 @@ A reactive REST API for managing franchises, branches, and products built with S
 | GET | `/api/franquicias/{id}/productos-max-stock` | Product with max stock per branch |
 | GET | `/api/franquicias/{id}/completa` | Complete franchise with all branches and products |
 
-## 🐳 Quick Start with Docker
+##  Quick Start with Docker
 
 ```bash
 # Clone and navigate to project
@@ -73,7 +73,7 @@ docker-compose logs -f api
 docker-compose down
 ```
 
-## 💻 Local Development
+##  Local Development
 
 ### Prerequisites
 - Java 21+
@@ -94,7 +94,7 @@ docker-compose down
    ./gradlew bootRun
    ```
 
-## 📖 Usage Examples
+##  Usage Examples
 
 ### Create a franchise
 ```bash
@@ -134,12 +134,12 @@ curl http://localhost:8080/api/franquicias/1/productos-max-stock
 curl http://localhost:8080/api/franquicias/1/completa
 ```
 
-## 🧪 Running Tests
+##  Running Tests
 
 ```bash
 ./gradlew test
 ```
 
-## 📄 License
+##  License
 
 MIT
