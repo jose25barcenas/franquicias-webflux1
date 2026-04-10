@@ -18,6 +18,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import java.util.List;
+
 /**
  * Service implementation for managing franchises (franquicias).
  * Handles business logic for CRUD operations and retrieving complete franchise data.
@@ -52,7 +54,7 @@ public class FranquiciaService implements IFranquiciaService {
     @Override
     public Mono<FranquiciaResponse> actualizarFranquicia(Long id, FranquiciaRequest request) {
         return franquiciaRepository.findById(id)
-                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Franquicia not found with id: " + id)))
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("Franquicia not found")))
                 .map(f -> {
                     f.setNombre(request.nombre());
                     return f;
@@ -83,11 +85,17 @@ public class FranquiciaService implements IFranquiciaService {
                                 .map(this::toProductoResponse)
                                 .collectList()
                                 .map(productos -> new FranquiciaCompletaResponse.SucursalConProductos(
-                                    sucursal.getId(), sucursal.getNombre(), productos))
+                                    sucursal.getId(),
+                                    sucursal.getNombre(),
+                                    productos
+                                ))
                         )
                         .collectList()
                         .map(sucursales -> new FranquiciaCompletaResponse(
-                            franquicia.getId(), franquicia.getNombre(), sucursales))
+                            franquicia.getId(),
+                            franquicia.getNombre(),
+                            sucursales
+                        ))
                 );
     }
 

@@ -1,6 +1,7 @@
 package com.franquicias.controller;
 
 import com.franquicias.dto.*;
+import com.franquicias.dto.FranquiciaCompletaResponse;
 import com.franquicias.service.IFranquiciaService;
 import com.franquicias.service.ISucursalService;
 import com.franquicias.service.IProductoService;
@@ -12,6 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * REST controller for managing franchises (franquicias), branches (sucursales), and products (productos).
+ * Provides endpoints for CRUD operations on all entities.
+ */
 @RestController
 @RequestMapping("/api/franquicias")
 @RequiredArgsConstructor
@@ -117,5 +122,10 @@ public class FranquiciaController {
     @GetMapping("/{id}/productos-max-stock")
     public Flux<ProductoMaxStockResponse> productoMaxStock(@PathVariable Long id) {
         return productoService.productoMaxStockPorFranquicia(id);
+    }
+
+    @GetMapping("/{id}/completa")
+    public Mono<FranquiciaCompletaResponse> obtenerFranquiciaCompleta(@PathVariable Long id) {
+        return franquiciaService.obtenerFranquiciaCompleta(id);
     }
 }

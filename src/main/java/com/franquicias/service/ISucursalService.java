@@ -5,6 +5,9 @@ import com.franquicias.dto.SucursalResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * Interface defining operations for branch (sucursal) management.
+ */
 public interface ISucursalService {
     Flux<SucursalResponse> listarSucursales(Long franquiciaId);
     Mono<SucursalResponse> obtenerSucursal(Long id);

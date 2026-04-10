@@ -1,5 +1,6 @@
 package com.franquicias.service;
 
+import com.franquicias.config.GlobalExceptionHandler.ResourceNotFoundException;
 import com.franquicias.dto.ProductoMaxStockResponse;
 import com.franquicias.dto.ProductoRequest;
 import com.franquicias.dto.ProductoResponse;
@@ -34,7 +35,7 @@ public class ProductoService implements IProductoService {
     @Override
     public Mono<ProductoResponse> agregarProducto(Long sucursalId, ProductoRequest request) {
         return sucursalRepository.findById(sucursalId)
-                .switchIfEmpty(Mono.error(new IllegalArgumentException("Sucursal not found")))
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Sucursal not found with id: " + sucursalId)))
                 .map(s -> new Producto(null, request.nombre(), request.stock(), sucursalId))
                 .flatMap(productoRepository::save)
                 .map(this::toResponse);
@@ -43,7 +44,7 @@ public class ProductoService implements IProductoService {
     @Override
     public Mono<ProductoResponse> actualizarStock(Long productoId, ProductoStockRequest request) {
         return productoRepository.findById(productoId)
-                .switchIfEmpty(Mono.error(new IllegalArgumentException("Producto not found")))
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Producto not found with id: " + productoId)))
                 .map(p -> {
                     p.setStock(request.stock());
                     return p;
@@ -55,7 +56,7 @@ public class ProductoService implements IProductoService {
     @Override
     public Mono<ProductoResponse> actualizarNombreProducto(Long productoId, ProductoRequest request) {
         return productoRepository.findById(productoId)
-                .switchIfEmpty(Mono.error(new IllegalArgumentException("Producto not found")))
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Producto not found with id: " + productoId)))
                 .map(p -> {
                     p.setNombre(request.nombre());
                     return p;
@@ -66,7 +67,9 @@ public class ProductoService implements IProductoService {
 
     @Override
     public Mono<Void> eliminarProducto(Long productoId) {
-        return productoRepository.deleteById(productoId);
+        return productoRepository.findById(productoId)
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Producto not found with id: " + productoId)))
+                .flatMap(p -> productoRepository.deleteById(productoId));
     }
 
     @Override

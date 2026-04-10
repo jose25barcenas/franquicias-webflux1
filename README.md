@@ -53,6 +53,7 @@ A reactive REST API for managing franchises, branches, and products built with S
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/franquicias/{id}/productos-max-stock` | Product with max stock per branch |
+| GET | `/api/franquicias/{id}/completa` | Complete franchise with all branches and products |
 
 ## 🐳 Quick Start with Docker
 
@@ -126,6 +127,11 @@ curl -X PUT http://localhost:8080/api/franquicias/productos/1/stock \
 ### Get product with max stock per branch
 ```bash
 curl http://localhost:8080/api/franquicias/1/productos-max-stock
+```
+
+### Get complete franchise with all branches and products
+```bash
+curl http://localhost:8080/api/franquicias/1/completa
 ```
 
 ## 🧪 Running Tests
