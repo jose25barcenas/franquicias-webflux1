@@ -142,4 +142,29 @@ class FranquiciaControllerTest {
                 .expectBodyList(ProductoResponse.class)
                 .hasSize(1);
     }
+
+    @Test
+    void productoMaxStock_returnsMaxStockPerSucursal() {
+        when(productoService.productoMaxStockPorFranquicia(1L))
+                .thenReturn(Flux.just(new ProductoMaxStockResponse("Producto 1", 100, "Sucursal 1", 1L)));
+
+        webTestClient.get().uri("/api/franquicias/1/productos-max-stock")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(ProductoMaxStockResponse.class)
+                .hasSize(1);
+    }
+
+    @Test
+    void obtenerFranquiciaCompleta_returnsFranquiciaConSucursalesYProductos() {
+        FranquiciaCompletaResponse response = new FranquiciaCompletaResponse(1L, "Franquicia 1",
+                java.util.List.of(new FranquiciaCompletaResponse.SucursalConProductos(1L, "Sucursal 1",
+                        java.util.List.of(new ProductoResponse(1L, "Producto 1", 10, 1L)))));
+        when(franquiciaService.obtenerFranquiciaCompleta(1L)).thenReturn(Mono.just(response));
+
+        webTestClient.get().uri("/api/franquicias/1/completa")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(FranquiciaCompletaResponse.class);
+    }
 }
